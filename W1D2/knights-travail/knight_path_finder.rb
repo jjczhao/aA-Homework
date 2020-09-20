@@ -3,7 +3,7 @@ require_relative "tree_node"
 class KnightPathFinder
     attr_reader :root_node
     def self.valid_moves(pos)
-        possible_positions = [[-1,-1], [-1,0], [-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
+        possible_positions = [[-2,-1], [-1,-2], [-2,1],[-1,2],[1,-2],[2,-1],[2,1],[1,2]]
         possible_positions.map do |unit_position|
             row = pos[0] + unit_position[0] 
             col = pos[1] + unit_position[1]
@@ -15,6 +15,7 @@ class KnightPathFinder
     def initialize(pos)
         @root_node = PolyTreeNode.new(pos)
         @considered_positions = [@root_node]
+        build_move_tree
     end
 
     def new_move_positions(pos)
@@ -41,5 +42,19 @@ class KnightPathFinder
             end
             queue.push(*possible_moves)
         end
+    end
+
+    def find_path(end_pos)
+        node = @root_node.bfs(end_pos)
+        trace_path_back(node)
+    end
+
+    def trace_path_back(node)
+        result = []
+        while node
+            result.unshift(node)
+            node = node.parent
+        end
+        result
     end
 end
